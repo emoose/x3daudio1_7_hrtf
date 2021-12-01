@@ -140,6 +140,13 @@ IXAudio2SubmixVoice* AudioGraphMapper::CreateSubmixVoice(UINT32 InputChannels, U
 
 IXAudio2MasteringVoice* AudioGraphMapper::CreateMasteringVoice(UINT32 InputChannels, UINT32 InputSampleRate, UINT32 Flags, UINT32 DeviceIndex, const XAUDIO2_EFFECT_CHAIN* pEffectChain)
 {
+	if (InputChannels == XAUDIO2_DEFAULT_CHANNELS)
+	{
+		// Change the InputChannels that are stored in XAudio2MasteringVoiceProxy, in case game requests it later
+		// (as mentioned below, we only make use of 2 channels here)
+		InputChannels = 2;
+	}
+	
 	auto proxyVoice = new XAudio2MasteringVoiceProxy(InputChannels, InputSampleRate, Flags, DeviceIndex, from_XAUDIO2_EFFECT_CHAIN(pEffectChain));
 
 	// For HRTF only two-channel mastering voice makes sense.
